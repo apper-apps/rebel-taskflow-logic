@@ -14,23 +14,13 @@ const TaskList = ({
   onTaskUpdate,
   onAddTask 
 }) => {
-  const [tasks, setTasks] = useState([]);
+const [tasks, setTasks] = useState([]);
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [activeTimer, setActiveTimer] = useState(null);
-  const [timerInterval, setTimerInterval] = useState(null);
-  const [elapsedTime, setElapsedTime] = useState(0);
 
   useEffect(() => {
     loadData();
-    loadTimerState();
-    
-    return () => {
-      if (timerInterval) {
-        clearInterval(timerInterval);
-      }
-    };
   }, []);
 
   const loadData = async () => {
@@ -134,115 +124,7 @@ onTaskUpdate?.();
 toast.error("Impossibile eliminare l'attività");
       console.error("Error deleting task:", err);
     }
-  };
-
-const loadTimerState = () => {
-    const savedTimer = localStorage.getItem('activeTimer');
-    if (savedTimer) {
-      const timerData = JSON.parse(savedTimer);
-      const now = Date.now();
-      const elapsed = Math.floor((now - timerData.startTime) / 1000);
-      
-      setActiveTimer(timerData.taskId);
-      setElapsedTime(elapsed);
-      startTimerInterval();
-    }
-  };
-
-  const saveTimerState = (taskId, startTime) => {
-    localStorage.setItem('activeTimer', JSON.stringify({
-      taskId,
-      startTime
-    }));
-  };
-
-  const clearTimerState = () => {
-    localStorage.removeItem('activeTimer');
-  };
-
-  const startTimerInterval = () => {
-    const interval = setInterval(() => {
-      setElapsedTime(prev => prev + 1);
-    }, 1000);
-    setTimerInterval(interval);
-    return interval;
-  };
-
-  const handleStartTimer = async (task) => {
-    try {
-      // Stop any existing timer
-      if (activeTimer) {
-        await handleStopTimer();
-      }
-
-      // Start new timer
-      const startTime = Date.now();
-      setActiveTimer(task.Id);
-      setElapsedTime(0);
-      saveTimerState(task.Id, startTime);
-      
-      const interval = startTimerInterval();
-      
-      // Update task status to in-progress
-      await taskService.update(task.Id, {
-        ...task,
-        status: "in-progress"
-      });
-      
-      await loadData();
-      onTaskUpdate?.();
-      toast.success(`Timer avviato per: ${task.title}`);
-    } catch (err) {
-      toast.error("Impossibile avviare il timer");
-      console.error("Error starting timer:", err);
-    }
-  };
-
-  const handleStopTimer = async () => {
-    if (!activeTimer || timerInterval === null) return;
-
-    try {
-      // Clear interval
-      clearInterval(timerInterval);
-      setTimerInterval(null);
-
-      // Find the task and update with elapsed time
-      const task = tasks.find(t => t.Id === activeTimer);
-      if (task) {
-        const minutesWorked = Math.max(1, Math.round(elapsedTime / 60));
-        
-        await taskService.update(task.Id, {
-          ...task,
-          actualMinutes: (task.actualMinutes || 0) + minutesWorked,
-          status: "pending" // Return to pending after stopping timer
-        });
-
-        toast.success(`Timer fermato. ${minutesWorked} minuti registrati per: ${task.title}`);
-      }
-
-      // Reset timer state
-      setActiveTimer(null);
-      setElapsedTime(0);
-      clearTimerState();
-      
-      await loadData();
-      onTaskUpdate?.();
-    } catch (err) {
-      toast.error("Impossibile fermare il timer");
-      console.error("Error stopping timer:", err);
-    }
-  };
-
-  const formatElapsedTime = (seconds) => {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
-    
-    if (hours > 0) {
-      return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-    }
-    return `${minutes}:${secs.toString().padStart(2, '0')}`;
-  };
+};
 
   const handleEditTask = (task) => {
     toast.info("Funzionalità di modifica attività in arrivo!");
@@ -296,11 +178,6 @@ const loadTimerState = () => {
                 onComplete={handleCompleteTask}
                 onEdit={handleEditTask}
                 onDelete={handleDeleteTask}
-                onStartTimer={handleStartTimer}
-                onStopTimer={handleStopTimer}
-                isTimerActive={activeTimer === task.Id}
-                elapsedTime={activeTimer === task.Id ? elapsedTime : 0}
-                formatElapsedTime={formatElapsedTime}
               />
             );
           })}
