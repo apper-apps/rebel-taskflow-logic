@@ -59,10 +59,9 @@ async create(taskData) {
     return this.tasks.filter(task => task.projectId === projectId);
   }
 
-  async getByStatus(status) {
+async getByStatus(status) {
     await this.delay(200);
     return this.tasks.filter(task => task.status?.toLowerCase() === status.toLowerCase());
-return this.tasks.filter(task => task.status?.toLowerCase() === status.toLowerCase());
   }
 
   async completeWithTime(Id, minutes) {

@@ -44,7 +44,7 @@ class ProjectService {
     return { ...this.projects[index] };
   }
 
-  async delete(Id) {
+async delete(Id) {
     await this.delay(250);
     const index = this.projects.findIndex(p => p.Id === Id);
     if (index === -1) {
@@ -52,7 +52,6 @@ class ProjectService {
     }
     this.projects.splice(index, 1);
     return true;
-return true;
   }
 
   async logTimeToProject(projectId, minutes) {
