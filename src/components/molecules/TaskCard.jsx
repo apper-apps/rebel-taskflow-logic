@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import Card from "@/components/atoms/Card";
-import Badge from "@/components/atoms/Badge";
-import Button from "@/components/atoms/Button";
-import ApperIcon from "@/components/ApperIcon";
 import { format } from "date-fns";
+import ApperIcon from "@/components/ApperIcon";
+import Badge from "@/components/atoms/Badge";
+import Card from "@/components/atoms/Card";
+import Button from "@/components/atoms/Button";
 
 const TaskCard = ({ task, project, onComplete, onEdit, onDelete, onStartTimer }) => {
   const [isCompleting, setIsCompleting] = useState(false);
@@ -44,6 +44,7 @@ const TaskCard = ({ task, project, onComplete, onEdit, onDelete, onStartTimer })
       return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
     }
     return `${mins}m`;
+return `${mins}m`;
   };
 
   return (
@@ -145,7 +146,7 @@ const TaskCard = ({ task, project, onComplete, onEdit, onDelete, onStartTimer })
                 />
               </div>
             </div>
-          </div>
+</div>
         </div>
       </Card>
     </motion.div>
