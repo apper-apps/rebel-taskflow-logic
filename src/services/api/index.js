@@ -1,2 +1,3 @@
 export { projectService } from "./projectService";
-export { taskService } from "./taskService";
+import taskServiceDefault from "./taskService";
+export { taskServiceDefault as taskService };
