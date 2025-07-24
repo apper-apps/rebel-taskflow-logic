@@ -3,8 +3,8 @@ import { motion } from "framer-motion";
 import ApperIcon from "@/components/ApperIcon";
 
 const Error = ({ 
-  title = "Something went wrong", 
-  message = "We encountered an error while loading your data. Please try again.", 
+title = "Qualcosa è andato storto", 
+  message = "Abbiamo riscontrato un errore durante il caricamento dei tuoi dati. Riprova.",
   onRetry,
   type = "default"
 }) => {
@@ -31,7 +31,7 @@ const Error = ({
           whileTap={{ scale: 0.95 }}
         >
           <ApperIcon name="RefreshCw" className="w-4 h-4" />
-          <span>Try Again</span>
+<span>Riprova</span>
         </motion.button>
       )}
     </motion.div>

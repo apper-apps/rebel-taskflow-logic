@@ -44,9 +44,9 @@ const Header = ({ onMenuClick, title, subtitle, actions }) => {
 
           {/* User Menu */}
           <div className="flex items-center space-x-3">
-            <div className="hidden sm:block text-right">
-              <p className="text-sm font-medium text-gray-900">Agency User</p>
-              <p className="text-xs text-gray-500">Marketing Team</p>
+<div className="hidden sm:block text-right">
+              <p className="text-sm font-medium text-gray-900">Utente Agenzia</p>
+              <p className="text-xs text-gray-500">Team Marketing</p>
             </div>
             <div className="w-8 h-8 bg-gradient-to-r from-accent-400 to-accent-500 rounded-full flex items-center justify-center">
               <ApperIcon name="User" className="w-4 h-4 text-white" />

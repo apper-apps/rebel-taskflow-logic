@@ -1,19 +1,20 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { motion } from "framer-motion";
-
-// Layout Components
-import Sidebar from "@/components/organisms/Sidebar";
-import Header from "@/components/organisms/Header";
-
-// Page Components
-import Dashboard from "@/components/pages/Dashboard";
-import Projects from "@/components/pages/Projects";
+import "@/index.css";
 import Tasks from "@/components/pages/Tasks";
 import Calendar from "@/components/pages/Calendar";
+import Dashboard from "@/components/pages/Dashboard";
 import Reports from "@/components/pages/Reports";
 import Settings from "@/components/pages/Settings";
+import Projects from "@/components/pages/Projects";
+import Header from "@/components/organisms/Header";
+import Sidebar from "@/components/organisms/Sidebar";
+
+// Layout Components
+
+// Page Components
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -36,11 +37,11 @@ function App() {
           {/* Main Content */}
           <div className="flex-1 flex flex-col overflow-hidden lg:ml-0">
             <Routes>
-              <Route path="/" element={
+<Route path="/" element={
                 <>
                   <Header 
-                    title="Dashboard" 
-                    subtitle="Welcome back! Here's what's happening with your projects today."
+                    title="Pannello di Controllo" 
+                    subtitle="Bentornato! Ecco cosa sta succedendo con i tuoi progetti oggi."
                     onMenuClick={handleMenuClick} 
                   />
                   <main className="flex-1 overflow-y-auto p-6">
@@ -55,11 +56,11 @@ function App() {
                 </>
               } />
               
-              <Route path="/projects" element={
+<Route path="/projects" element={
                 <>
-                  <Header 
-                    title="Projects" 
-                    subtitle="Manage your marketing campaigns and client work."
+                  <Header
+                    title="Progetti" 
+                    subtitle="Gestisci le tue campagne di marketing e il lavoro per i clienti."
                     onMenuClick={handleMenuClick} 
                   />
                   <main className="flex-1 overflow-y-auto p-6">
@@ -74,11 +75,11 @@ function App() {
                 </>
               } />
               
-              <Route path="/tasks" element={
+<Route path="/tasks" element={
                 <>
-                  <Header 
-                    title="Tasks" 
-                    subtitle="Add and manage your daily tasks with natural language input."
+                  <Header
+                    title="Attività" 
+                    subtitle="Aggiungi e gestisci le tue attività quotidiane con input in linguaggio naturale."
                     onMenuClick={handleMenuClick} 
                   />
                   <main className="flex-1 overflow-y-auto p-6">
@@ -93,11 +94,11 @@ function App() {
                 </>
               } />
               
-              <Route path="/calendar" element={
+<Route path="/calendar" element={
                 <>
-                  <Header 
-                    title="Calendar" 
-                    subtitle="View and manage your scheduled tasks and availability."
+                  <Header
+                    title="Calendario" 
+                    subtitle="Visualizza e gestisci le tue attività programmate e la disponibilità."
                     onMenuClick={handleMenuClick} 
                   />
                   <main className="flex-1 overflow-y-auto p-6">
@@ -112,11 +113,11 @@ function App() {
                 </>
               } />
               
-              <Route path="/reports" element={
+<Route path="/reports" element={
                 <>
-                  <Header 
-                    title="Reports" 
-                    subtitle="Track productivity and analyze project performance."
+                  <Header
+                    title="Rapporti" 
+                    subtitle="Monitora la produttività e analizza le prestazioni dei progetti."
                     onMenuClick={handleMenuClick} 
                   />
                   <main className="flex-1 overflow-y-auto p-6">
@@ -131,11 +132,11 @@ function App() {
                 </>
               } />
               
-              <Route path="/settings" element={
+<Route path="/settings" element={
                 <>
-                  <Header 
-                    title="Settings" 
-                    subtitle="Configure your preferences and work schedule."
+                  <Header
+                    title="Impostazioni" 
+                    subtitle="Configura le tue preferenze e orario di lavoro."
                     onMenuClick={handleMenuClick} 
                   />
                   <main className="flex-1 overflow-y-auto p-6">

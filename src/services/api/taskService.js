@@ -19,7 +19,7 @@ class TaskService {
     return { ...task };
   }
 
-  async create(taskData) {
+async create(taskData) {
     await this.delay(350);
     const newId = Math.max(...this.tasks.map(t => t.Id)) + 1;
     const newTask = {
@@ -27,7 +27,8 @@ class TaskService {
       Id: newId,
       createdAt: new Date().toISOString(),
       actualMinutes: 0,
-      status: "pending"
+      status: "pending",
+      lunchBreakExcluded: true // Flag to indicate lunch break should be excluded from time calculations
     };
     this.tasks.push(newTask);
     return { ...newTask };

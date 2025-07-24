@@ -106,9 +106,9 @@ const Calendar = () => {
     >
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Calendar</h1>
-          <p className="text-gray-600 mt-1">Schedule and manage your tasks</p>
+<div>
+          <h1 className="text-2xl font-bold text-gray-900">Calendario</h1>
+          <p className="text-gray-600 mt-1">Programma e gestisci le tue attività</p>
         </div>
         
         <div className="flex items-center space-x-2">
@@ -120,8 +120,8 @@ const Calendar = () => {
                   ? "bg-white text-primary-600 shadow-sm" 
                   : "text-gray-600 hover:text-gray-900"
               }`}
-            >
-              Week
+>
+              Settimana
             </button>
             <button
               onClick={() => setView("day")}
@@ -130,15 +130,15 @@ const Calendar = () => {
                   ? "bg-white text-primary-600 shadow-sm" 
                   : "text-gray-600 hover:text-gray-900"
               }`}
-            >
-              Day
+>
+              Giorno
             </button>
           </div>
           
           <Button variant="ghost" size="sm" icon="ChevronLeft" />
           <Button variant="ghost" size="sm" icon="ChevronRight" />
-          <Button variant="primary" size="sm" icon="Plus">
-            Add Task
+<Button variant="primary" size="sm" icon="Plus">
+            Aggiungi Attività
           </Button>
         </div>
       </div>
@@ -150,8 +150,8 @@ const Calendar = () => {
             <h2 className="text-lg font-semibold text-gray-900">
               {format(currentWeek, "MMMM yyyy")}
             </h2>
-            <Badge variant="primary" size="sm">
-              {tasks.length} scheduled tasks
+<Badge variant="primary" size="sm">
+              {tasks.length} attività programmate
             </Badge>
           </div>
           
@@ -161,8 +161,8 @@ const Calendar = () => {
               size="sm"
               icon="RefreshCw"
               onClick={loadData}
-            >
-              Refresh
+>
+              Aggiorna
             </Button>
             <Button
               variant="secondary"
@@ -171,8 +171,8 @@ const Calendar = () => {
                 setCurrentWeek(startOfWeek(new Date()));
                 setSelectedDate(new Date());
               }}
-            >
-              Today
+>
+              Oggi
             </Button>
           </div>
         </div>
@@ -237,9 +237,9 @@ const Calendar = () => {
                       </div>
                     )}
                     
-                    {dayTasks.length === 0 && (
+{dayTasks.length === 0 && (
                       <div className="text-xs text-center text-gray-400 py-4">
-                        No tasks
+                        Nessuna attività
                       </div>
                     )}
                   </div>
@@ -252,47 +252,58 @@ const Calendar = () => {
         /* Day View */
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Time Slots */}
-          <Card className="p-6">
+<Card className="p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              {format(selectedDate, "EEEE, MMMM d")}
+              {format(selectedDate, "EEEE, d MMMM", { locale: { localize: { day: (n) => ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato'][n], month: (n) => ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'][n] } } })}
             </h3>
             
-            <div className="space-y-2">
-              {Array.from({ length: 12 }, (_, i) => i + 8).map((hour) => (
-                <div key={hour} className="flex items-center space-x-4 py-3 border-b border-gray-100">
-                  <div className="w-16 text-sm text-gray-500">
-                    {hour}:00
-                  </div>
-                  <div className="flex-1">
-                    {todayTasks
-                      .filter(task => task.scheduledTime && parseInt(task.scheduledTime.split(":")[0]) === hour)
-                      .map(task => (
-                        <div
-                          key={task.Id}
-                          className="p-2 bg-primary-50 rounded border-l-4 border-l-primary-500 mb-2"
-                        >
-                          <p className="font-medium text-gray-900">{task.title}</p>
-                          <p className="text-sm text-gray-600">{Math.round(task.estimatedMinutes / 60)}h</p>
+<div className="space-y-2">
+              {Array.from({ length: 12 }, (_, i) => i + 8).map((hour) => {
+                const isLunchBreak = hour >= 12 && hour < 14; // Lunch break from 12:00 to 14:00
+                return (
+                  <div key={hour} className="flex items-center space-x-4 py-3 border-b border-gray-100">
+                    <div className="w-16 text-sm text-gray-500">
+                      {hour}:00
+                      {isLunchBreak && <div className="text-xs text-orange-600">Pausa</div>}
+                    </div>
+                    <div className="flex-1">
+                      {isLunchBreak ? (
+                        <div className="p-2 bg-orange-50 rounded border-l-4 border-l-orange-400 mb-2">
+                          <p className="font-medium text-orange-800">Pausa Pranzo</p>
+                          <p className="text-sm text-orange-600">Orario non lavorativo</p>
                         </div>
-                      ))
-                    }
+                      ) : (
+                        todayTasks
+                          .filter(task => task.scheduledTime && parseInt(task.scheduledTime.split(":")[0]) === hour)
+                          .map(task => (
+                            <div
+                              key={task.Id}
+                              className="p-2 bg-primary-50 rounded border-l-4 border-l-primary-500 mb-2"
+                            >
+                              <p className="font-medium text-gray-900">{task.title}</p>
+                              <p className="text-sm text-gray-600">{Math.round(task.estimatedMinutes / 60)}ore</p>
+                            </div>
+                          ))
+                      )}
+                    </div>
                   </div>
-                </div>
+                );
+              })}
               ))}
             </div>
           </Card>
           
           {/* Task Details */}
           <div className="space-y-6">
-            <Card className="p-6">
+<Card className="p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                Today's Tasks ({todayTasks.length})
+                Attività di Oggi ({todayTasks.length})
               </h3>
               
               {todayTasks.length === 0 ? (
-                <Empty 
-                  title="No tasks scheduled"
-                  message="You have a free day! Consider scheduling some tasks or take a well-deserved break."
+<Empty 
+                  title="Nessuna attività programmata"
+                  message="Hai una giornata libera! Considera di programmare alcune attività o prenditi una pausa ben meritata."
                   icon="Calendar"
                 />
               ) : (
@@ -321,8 +332,8 @@ const Calendar = () => {
                           )}
                           
                           <div className="flex items-center">
-                            <ApperIcon name="Clock" className="w-4 h-4 mr-1" />
-                            {Math.round(task.estimatedMinutes / 60)}h
+<ApperIcon name="Clock" className="w-4 h-4 mr-1" />
+                            {Math.round(task.estimatedMinutes / 60)}ore
                           </div>
                           
                           {task.scheduledTime && (
@@ -340,13 +351,13 @@ const Calendar = () => {
             </Card>
             
             {/* Team Availability */}
-            <Card className="p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Team Availability</h3>
+<Card className="p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Disponibilità del Team</h3>
               
               <div className="space-y-3">
-                {[
-                  { name: "Sarah (Designer)", available: "9:00 - 17:00", tasks: 4 },
-                  { name: "Mike (Developer)", available: "10:00 - 18:00", tasks: 6 },
+{[
+                  { name: "Sara (Designer)", available: "9:00 - 17:00", tasks: 4 },
+                  { name: "Marco (Sviluppatore)", available: "10:00 - 18:00", tasks: 6 },
                   { name: "Lisa (Manager)", available: "8:00 - 16:00", tasks: 3 }
                 ].map((member, index) => (
                   <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
@@ -354,8 +365,8 @@ const Calendar = () => {
                       <p className="font-medium text-gray-900">{member.name}</p>
                       <p className="text-sm text-gray-600">{member.available}</p>
                     </div>
-                    <Badge variant="primary" size="sm">
-                      {member.tasks} tasks
+<Badge variant="primary" size="sm">
+                      {member.tasks} attività
                     </Badge>
                   </div>
                 ))}

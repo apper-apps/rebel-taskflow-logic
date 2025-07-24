@@ -85,7 +85,7 @@ const TaskList = ({
       setTasks(filteredTasks);
       setProjects(projectsData);
     } catch (err) {
-      setError("Failed to load tasks. Please try again.");
+setError("Impossibile caricare le attività. Riprova.");
       console.error("Error loading tasks:", err);
     } finally {
       setLoading(false);
@@ -102,8 +102,8 @@ const TaskList = ({
       });
       
       await loadData();
-      onTaskUpdate?.();
-      toast.success("Task completed successfully!");
+onTaskUpdate?.();
+      toast.success("Attività completata con successo!");
     } catch (err) {
       toast.error("Failed to complete task");
       console.error("Error completing task:", err);
@@ -111,28 +111,28 @@ const TaskList = ({
   };
 
   const handleDeleteTask = async (taskId) => {
-    if (!window.confirm("Are you sure you want to delete this task?")) {
+if (!window.confirm("Sei sicuro di voler eliminare questa attività?")) {
       return;
     }
     
     try {
       await taskService.delete(taskId);
       await loadData();
-      onTaskUpdate?.();
-      toast.success("Task deleted successfully!");
+onTaskUpdate?.();
+      toast.success("Attività eliminata con successo!");
     } catch (err) {
-      toast.error("Failed to delete task");
+toast.error("Impossibile eliminare l'attività");
       console.error("Error deleting task:", err);
     }
   };
 
   const handleStartTimer = (task) => {
-    toast.info(`Timer started for: ${task.title}`);
+toast.info(`Timer avviato per: ${task.title}`);
     // Timer functionality would be implemented here
   };
 
   const handleEditTask = (task) => {
-    toast.info("Edit task functionality coming soon!");
+toast.info("Funzionalità di modifica attività in arrivo!");
     // Edit functionality would be implemented here
   };
 
@@ -163,8 +163,8 @@ const TaskList = ({
     <div>
       {showHeader && (
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-semibold text-gray-900">
-            {filters.dueToday ? "Today's Tasks" : "Tasks"}
+<h2 className="text-xl font-semibold text-gray-900">
+            {filters.dueToday ? "Attività di Oggi" : "Attività"}
             <span className="ml-2 text-sm font-normal text-gray-500">
               ({tasks.length})
             </span>
