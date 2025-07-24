@@ -9,6 +9,7 @@ import Dashboard from "@/components/pages/Dashboard";
 import Reports from "@/components/pages/Reports";
 import Settings from "@/components/pages/Settings";
 import Projects from "@/components/pages/Projects";
+import ProjectDetail from "@/components/pages/ProjectDetail";
 import Header from "@/components/organisms/Header";
 import Sidebar from "@/components/organisms/Sidebar";
 
@@ -147,13 +148,31 @@ function App() {
                     >
                       <Settings />
                     </motion.div>
+</main>
+                </>
+              } />
+              
+              <Route path="/projects/:id" element={
+                <>
+                  <Header
+                    title="Dettagli Progetto" 
+                    subtitle="Visualizza informazioni dettagliate, milestone e progresso del progetto."
+                    onMenuClick={handleMenuClick} 
+                  />
+                  <main className="flex-1 overflow-y-auto p-6">
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <ProjectDetail />
+                    </motion.div>
                   </main>
                 </>
               } />
             </Routes>
           </div>
         </div>
-
         {/* Toast Notifications */}
         <ToastContainer
           position="top-right"

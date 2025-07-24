@@ -10,11 +10,10 @@ const Projects = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
 
-  const handleProjectClick = (project) => {
-    toast.info(`Opening project: ${project.name}`);
-    // Navigate to project detail view
+const handleProjectClick = (project) => {
+    const projectId = parseInt(project.Id);
+    navigate(`/projects/${projectId}`);
   };
-
   const handleAddProject = () => {
     toast.info("Create project functionality coming soon!");
     // Open create project modal or navigate to form
