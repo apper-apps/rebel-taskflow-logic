@@ -6,21 +6,33 @@ import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
 import Loading from "@/components/ui/Loading";
 
-const ProjectGrid = ({ onProjectClick, onAddProject }) => {
+const ProjectGrid = ({ searchTerm, statusFilter, clientFilter, onProjectClick, onAddProject }) => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    loadProjects();
-  }, []);
+    loadFilteredProjects();
+  }, [searchTerm, statusFilter, clientFilter]);
 
-  const loadProjects = async () => {
+const loadFilteredProjects = async () => {
     try {
       setError("");
       setLoading(true);
-      const data = await projectService.getAll();
-      setProjects(data);
+      
+      // Use filtered search if any filters are applied
+      if (searchTerm || statusFilter || clientFilter) {
+        const data = await projectService.getByFilters({
+          searchTerm: searchTerm || "",
+          statusFilter: statusFilter || "",
+          clientFilter: clientFilter || ""
+        });
+        setProjects(data);
+      } else {
+        // Load all projects if no filters
+        const data = await projectService.getAll();
+        setProjects(data);
+      }
     } catch (err) {
       setError("Failed to load projects. Please try again.");
       console.error("Error loading projects:", err);
@@ -35,10 +47,10 @@ const ProjectGrid = ({ onProjectClick, onAddProject }) => {
 
   if (error) {
     return (
-      <Error 
+<Error 
         title="Failed to load projects"
         message={error}
-        onRetry={loadProjects}
+        onRetry={loadFilteredProjects}
       />
     );
   }

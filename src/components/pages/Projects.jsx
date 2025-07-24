@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -15,6 +15,8 @@ const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [clientFilter, setClientFilter] = useState("");
+  const [availableClients, setAvailableClients] = useState([]);
+  const [loadingClients, setLoadingClients] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [formData, setFormData] = useState({
@@ -27,8 +29,24 @@ const navigate = useNavigate();
     budget: "",
     startDate: "",
     endDate: ""
-  });
+});
   const [formErrors, setFormErrors] = useState({});
+
+  // Load available clients for filter dropdown
+  useEffect(() => {
+    const loadClients = async () => {
+      try {
+        const clients = await projectService.getUniqueClients();
+        setAvailableClients(clients);
+      } catch (error) {
+        console.error("Error loading clients:", error);
+      } finally {
+        setLoadingClients(false);
+      }
+    };
+    loadClients();
+  }, []);
+
   const handleProjectClick = (project) => {
     const projectId = parseInt(project.Id);
     navigate(`/projects/${projectId}`);
@@ -150,9 +168,12 @@ const navigate = useNavigate();
     }
   };
 
-  const handleSearch = (term) => {
+const handleSearch = (term) => {
     setSearchTerm(term);
-    // Implement search functionality
+  };
+
+  const handleClearSearch = () => {
+    setSearchTerm("");
   };
   return (
     <motion.div
@@ -178,10 +199,10 @@ const navigate = useNavigate();
       {/* Search and Filters */}
       <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
         <div className="flex-1">
-          <SearchBar
+<SearchBar
             placeholder="Search projects..."
             onSearch={handleSearch}
-            onClear={() => setSearchTerm("")}
+            onClear={handleClearSearch}
           />
         </div>
 <div className="flex space-x-2">
@@ -197,15 +218,16 @@ const navigate = useNavigate();
             <option value="on-hold">On Hold</option>
           </select>
           
-          <select 
+<select 
             value={clientFilter}
             onChange={(e) => setClientFilter(e.target.value)}
             className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+            disabled={loadingClients}
           >
             <option value="">All Clients</option>
-            <option value="acme-corp">Acme Corp</option>
-            <option value="tech-startup">Tech Startup Inc</option>
-            <option value="fashion-brand">Fashion Brand Co</option>
+            {availableClients.map(client => (
+              <option key={client} value={client}>{client}</option>
+            ))}
           </select>
         </div>
       </div>
