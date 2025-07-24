@@ -44,10 +44,13 @@ const ProjectDetail = () => {
     }
   };
 
-  const handleBackClick = () => {
+const handleBackClick = () => {
     navigate("/projects");
   };
 
+  const handleEditClick = () => {
+    navigate(`/projects/${id}/edit`);
+  };
   const getStatusVariant = (status) => {
     switch (status) {
       case "active":
@@ -147,9 +150,8 @@ const ProjectDetail = () => {
             </div>
           </div>
         </div>
-        
-        <div className="flex space-x-3">
-          <Button variant="secondary" icon="Edit">
+<div className="flex space-x-3">
+          <Button variant="secondary" icon="Edit" onClick={handleEditClick}>
             Modifica
           </Button>
           <Button variant="primary" icon="Play">
