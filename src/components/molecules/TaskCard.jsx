@@ -1,23 +1,21 @@
-import React, { useState } from "react";
+import React, { forwardRef, useState } from "react";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
 import ApperIcon from "@/components/ApperIcon";
 import Badge from "@/components/atoms/Badge";
 import Card from "@/components/atoms/Card";
 import Button from "@/components/atoms/Button";
+const TaskCard = React.forwardRef(({ task, project, onComplete, onEdit, onDelete, onStartTimer }, ref) => {
+  const [isCompleting, setIsCompleting] = useState(false)
 
-const TaskCard = ({ task, project, onComplete, onEdit, onDelete, onStartTimer }) => {
-  const [isCompleting, setIsCompleting] = useState(false);
-
-  const getPriorityVariant = (priority) => {
-    switch (priority?.toLowerCase()) {
-      case "urgent": return "urgent";
-      case "high": return "high";
-      case "medium": return "medium";
-      case "low": return "low";
-      default: return "default";
-    }
-  };
+function getPriorityVariant(priority) {
+    const variants = {
+      High: "destructive",
+      Medium: "warning",
+      Low: "default"
+    };
+    return variants[priority] || "default";
+  }
 
   const getStatusIcon = (status) => {
     switch (status?.toLowerCase()) {
@@ -53,7 +51,7 @@ const formatTime = (minutes) => {
       exit={{ opacity: 0, x: -100 }}
       layout
     >
-      <Card className="p-4 hover:shadow-md transition-all duration-200">
+<Card ref={ref} className="p-4 hover:shadow-md transition-all duration-200">
         <div className="flex items-start space-x-4">
           {/* Status Checkbox */}
           <motion.button
@@ -147,9 +145,10 @@ const formatTime = (minutes) => {
             </div>
 </div>
         </div>
-      </Card>
+</Card>
     </motion.div>
-  );
-};
+  )
+})
 
+TaskCard.displayName = 'TaskCard'
 export default TaskCard;
