@@ -105,10 +105,9 @@ totalEstimatedHours: data.totalEstimatedHours || 0,
       return;
     }
 
-    try {
+try {
       setSaving(true);
       const projectId = parseInt(id);
-const projectId = parseInt(id);
       
       const updateData = {
         objectives: formData.objectives.filter(obj => obj.trim() !== ""),
