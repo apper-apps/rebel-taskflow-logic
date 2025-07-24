@@ -1,0 +1,188 @@
+[
+  {
+    "Id": 1,
+    "name": "Brand X Social Campaign",
+    "description": "Complete social media marketing campaign for Brand X including content creation, scheduling, and performance tracking across all major platforms.",
+    "objectives": [
+      "Increase brand awareness by 30%",
+      "Generate 500 new leads",
+      "Achieve 15% engagement rate"
+    ],
+    "clientName": "Brand X Corp",
+    "milestones": [
+      {
+        "id": "m1",
+        "name": "Content Strategy Approval",
+        "dueDate": "2024-01-15T00:00:00.000Z",
+        "completed": true
+      },
+      {
+        "id": "m2",
+        "name": "Creative Assets Delivery",
+        "dueDate": "2024-01-25T00:00:00.000Z",
+        "completed": false
+      },
+      {
+        "id": "m3",
+        "name": "Campaign Launch",
+        "dueDate": "2024-02-01T00:00:00.000Z",
+        "completed": false
+      }
+    ],
+    "totalEstimatedHours": 120,
+    "totalActualHours": 85,
+    "createdAt": "2024-01-01T10:00:00.000Z",
+    "status": "in-progress"
+  },
+  {
+    "Id": 2,
+    "name": "Tech Startup Launch",
+    "description": "End-to-end marketing strategy for tech startup launch including website development, PR campaign, and digital advertising setup.",
+    "objectives": [
+      "Launch website with SEO optimization",
+      "Secure 10 media mentions",
+      "Drive 1000 pre-registrations"
+    ],
+    "clientName": "Tech Startup Inc",
+    "milestones": [
+      {
+        "id": "m4",
+        "name": "Website Development Complete",
+        "dueDate": "2024-01-20T00:00:00.000Z",
+        "completed": false
+      },
+      {
+        "id": "m5",
+        "name": "PR Campaign Launch",
+        "dueDate": "2024-01-30T00:00:00.000Z",
+        "completed": false
+      }
+    ],
+    "totalEstimatedHours": 200,
+    "totalActualHours": 45,
+    "createdAt": "2024-01-05T14:30:00.000Z",
+    "status": "active"
+  },
+  {
+    "Id": 3,
+    "name": "Fashion Brand Rebrand",
+    "description": "Complete brand identity refresh for established fashion brand including logo design, brand guidelines, and marketing collateral updates.",
+    "objectives": [
+      "Modernize brand identity",
+      "Create comprehensive brand guidelines",
+      "Update all marketing materials"
+    ],
+    "clientName": "Fashion Brand Co",
+    "milestones": [
+      {
+        "id": "m6",
+        "name": "Brand Audit Complete",
+        "dueDate": "2024-01-10T00:00:00.000Z",
+        "completed": true
+      },
+      {
+        "id": "m7",
+        "name": "New Logo Concepts",
+        "dueDate": "2024-01-18T00:00:00.000Z",
+        "completed": true
+      },
+      {
+        "id": "m8",
+        "name": "Brand Guidelines Final",
+        "dueDate": "2024-01-28T00:00:00.000Z",
+        "completed": false
+      }
+    ],
+    "totalEstimatedHours": 80,
+    "totalActualHours": 65,
+    "createdAt": "2023-12-20T09:15:00.000Z",
+    "status": "in-progress"
+  },
+  {
+    "Id": 4,
+    "name": "E-commerce Store Optimization",
+    "description": "Comprehensive e-commerce store optimization including UX improvements, conversion rate optimization, and performance marketing setup.",
+    "objectives": [
+      "Improve conversion rate by 25%",
+      "Reduce cart abandonment by 15%",
+      "Increase average order value by 20%"
+    ],
+    "clientName": "Online Retailer Ltd",
+    "milestones": [
+      {
+        "id": "m9",
+        "name": "UX Audit Complete",
+        "dueDate": "2024-01-12T00:00:00.000Z",
+        "completed": true
+      },
+      {
+        "id": "m10",
+        "name": "A/B Tests Setup",
+        "dueDate": "2024-01-22T00:00:00.000Z",
+        "completed": false
+      }
+    ],
+    "totalEstimatedHours": 150,
+    "totalActualHours": 35,
+    "createdAt": "2024-01-08T11:45:00.000Z",
+    "status": "active"
+  },
+  {
+    "Id": 5,
+    "name": "Restaurant Chain Campaign",
+    "description": "Multi-location restaurant marketing campaign focusing on local SEO, social media management, and promotional events coordination.",
+    "objectives": [
+      "Improve local search rankings",
+      "Increase foot traffic by 30%",
+      "Launch loyalty program"
+    ],
+    "clientName": "Taste & Delight Restaurants",
+    "milestones": [
+      {
+        "id": "m11",
+        "name": "Local SEO Optimization",
+        "dueDate": "2024-01-16T00:00:00.000Z",
+        "completed": false
+      },
+      {
+        "id": "m12",
+        "name": "Social Media Calendar",
+        "dueDate": "2024-01-24T00:00:00.000Z",
+        "completed": false
+      }
+    ],
+    "totalEstimatedHours": 100,
+    "totalActualHours": 25,
+    "createdAt": "2024-01-03T16:20:00.000Z",
+    "status": "active"
+  },
+  {
+    "Id": 6,
+    "name": "B2B SaaS Lead Generation",
+    "description": "Lead generation campaign for B2B SaaS company including content marketing, email campaigns, and webinar series coordination.",
+    "objectives": [
+      "Generate 200 qualified leads",
+      "Achieve 5% email conversion rate",
+      "Host 4 successful webinars"
+    ],
+    "clientName": "SaaS Solutions Pro",
+    "milestones": [
+      {
+        "id": "m13",
+        "name": "Content Calendar Approval",
+        "dueDate": "2024-01-14T00:00:00.000Z",
+        "completed": true
+      },
+      {
+        "id": "m14",
+        "name": "First Webinar Execution",
+        "dueDate": "2024-01-26T00:00:00.000Z",
+        "completed": false
+      }
+    ],
+    "totalEstimatedHours": 160,
+    "totalActualHours": 55,
+    "createdAt": "2023-12-28T13:10:00.000Z",
+    "status": "in-progress"
+  }
+]
