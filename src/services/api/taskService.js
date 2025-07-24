@@ -92,6 +92,41 @@ async getByStatus(status) {
     return { ...this.tasks[index] };
   }
 
+async startTimer(Id) {
+    await this.delay(200);
+    const index = this.tasks.findIndex(t => t.Id === Id);
+    if (index === -1) {
+      throw new Error(`Task with Id ${Id} not found`);
+    }
+
+    this.tasks[index] = { 
+      ...this.tasks[index], 
+      status: "in-progress",
+      timerStarted: new Date().toISOString()
+    };
+
+    return { ...this.tasks[index] };
+  }
+
+  async stopTimer(Id, minutesWorked) {
+    await this.delay(200);
+    const index = this.tasks.findIndex(t => t.Id === Id);
+    if (index === -1) {
+      throw new Error(`Task with Id ${Id} not found`);
+    }
+
+    const task = this.tasks[index];
+    this.tasks[index] = { 
+      ...task, 
+      status: "pending",
+      actualMinutes: (task.actualMinutes || 0) + minutesWorked,
+      timerStarted: null,
+      lastWorkedAt: new Date().toISOString()
+    };
+
+    return { ...this.tasks[index] };
+  }
+
   delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }

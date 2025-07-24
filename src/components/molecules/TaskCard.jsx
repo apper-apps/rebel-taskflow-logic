@@ -6,11 +6,23 @@ import Badge from "@/components/atoms/Badge";
 import Card from "@/components/atoms/Card";
 import Input from "@/components/atoms/Input";
 import Button from "@/components/atoms/Button";
-const TaskCard = React.forwardRef(({ task, project, onComplete, onEdit, onDelete, onStartTimer }, ref) => {
+const TaskCard = React.forwardRef(({ 
+  task, 
+  project, 
+  onComplete, 
+  onEdit, 
+  onDelete, 
+  onStartTimer, 
+  onStopTimer,
+  isTimerActive = false,
+  elapsedTime = 0,
+  formatElapsedTime
+}, ref) => {
   const [isCompleting, setIsCompleting] = useState(false);
   const [showTimeModal, setShowTimeModal] = useState(false);
   const [timeInput, setTimeInput] = useState('');
-function getPriorityVariant(priority) {
+  
+  function getPriorityVariant(priority) {
     const variants = {
       High: "destructive",
       Medium: "warning",
@@ -82,11 +94,13 @@ const formatTime = (minutes) => {
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
           >
-            <ApperIcon 
+<ApperIcon 
               name={getStatusIcon(task.status)} 
               className={`w-5 h-5 ${
                 task.status === "completed" 
                   ? "text-success" 
+                  : isTimerActive
+                  ? "text-primary-500 animate-pulse"
                   : "text-gray-400 hover:text-primary-500"
               }`}
             />
@@ -121,17 +135,20 @@ const formatTime = (minutes) => {
                     <span>{project.name}</span>
                   </div>
                 )}
-                
-                <div className="flex items-center">
+<div className="flex items-center">
                   <ApperIcon name="Clock" className="w-4 h-4 mr-1" />
                   <span>{formatTime(task.estimatedMinutes)}</span>
-                  {task.actualMinutes > 0 && (
+                  {isTimerActive && (
+                    <span className="ml-1 text-primary-600 font-semibold animate-pulse">
+                      ({formatElapsedTime(elapsedTime)} attivo)
+                    </span>
+                  )}
+                  {!isTimerActive && task.actualMinutes > 0 && (
                     <span className="ml-1 text-primary-600">
                       ({formatTime(task.actualMinutes)} logged)
                     </span>
                   )}
                 </div>
-
                 {task.dueDate && (
                   <div className="flex items-center">
                     <ApperIcon name="Calendar" className="w-4 h-4 mr-1" />
@@ -141,13 +158,14 @@ const formatTime = (minutes) => {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex items-center space-x-2">
+<div className="flex items-center space-x-2">
                 {task.status !== "completed" && (
                   <Button
                     variant="ghost"
                     size="sm"
-                    icon="Play"
-                    onClick={() => onStartTimer?.(task)}
+                    icon={isTimerActive ? "Square" : "Play"}
+                    onClick={() => isTimerActive ? onStopTimer?.() : onStartTimer?.(task)}
+                    className={isTimerActive ? "text-red-500 hover:text-red-600" : ""}
                   />
                 )}
                 <Button
