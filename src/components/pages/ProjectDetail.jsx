@@ -18,7 +18,9 @@ const ProjectDetail = () => {
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
+  const [isTimerActive, setIsTimerActive] = useState(false);
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const [startTime, setStartTime] = useState(null);
   useEffect(() => {
     loadProject();
   }, [id]);
@@ -50,6 +52,62 @@ const handleBackClick = () => {
 
   const handleEditClick = () => {
     navigate(`/projects/${id}/edit`);
+  };
+
+  const handleStartTimer = () => {
+    if (isTimerActive) {
+      // Stop timer
+      setIsTimerActive(false);
+      const totalMinutes = Math.floor(elapsedTime / 60);
+      
+      if (totalMinutes > 0) {
+        // Log time to project
+        projectService.logTimeToProject(project.Id, totalMinutes)
+          .then((updatedProject) => {
+            setProject(updatedProject);
+            toast.success(`Timer fermato! ${totalMinutes} ${totalMinutes === 1 ? 'minuto' : 'minuti'} registrati al progetto.`);
+          })
+          .catch((err) => {
+            console.error('Error logging time:', err);
+            toast.error('Errore nel registrare il tempo al progetto');
+          });
+      } else {
+        toast.info('Timer fermato senza registrare tempo (meno di 1 minuto)');
+      }
+      
+      setElapsedTime(0);
+      setStartTime(null);
+    } else {
+      // Start timer
+      setIsTimerActive(true);
+      setStartTime(Date.now());
+      setElapsedTime(0);
+      toast.success('Timer avviato per il progetto!');
+    }
+  };
+
+  // Timer effect
+  React.useEffect(() => {
+    let interval;
+    if (isTimerActive && startTime) {
+      interval = setInterval(() => {
+        setElapsedTime(Math.floor((Date.now() - startTime) / 1000));
+      }, 1000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isTimerActive, startTime]);
+
+  const formatTime = (seconds) => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    
+    if (hours > 0) {
+      return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+    return `${minutes}:${secs.toString().padStart(2, '0')}`;
   };
   const getStatusVariant = (status) => {
     switch (status) {
@@ -150,13 +208,26 @@ const handleBackClick = () => {
             </div>
           </div>
         </div>
-<div className="flex space-x-3">
+<div className="flex flex-col space-y-3 sm:flex-row sm:space-y-0 sm:space-x-3">
           <Button variant="secondary" icon="Edit" onClick={handleEditClick}>
             Modifica
           </Button>
-          <Button variant="primary" icon="Play">
-            Avvia Timer
-          </Button>
+          <div className="flex flex-col space-y-2">
+            <Button 
+              variant={isTimerActive ? "accent" : "primary"} 
+              icon={isTimerActive ? "Square" : "Play"}
+              onClick={handleStartTimer}
+            >
+              {isTimerActive ? 'Ferma Timer' : 'Avvia Timer'}
+            </Button>
+            {isTimerActive && (
+              <div className="text-center">
+                <span className="text-sm font-mono text-gray-600 bg-gray-100 px-3 py-1 rounded-md">
+                  {formatTime(elapsedTime)}
+                </span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
