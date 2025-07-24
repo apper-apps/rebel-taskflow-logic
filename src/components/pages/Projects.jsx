@@ -1,18 +1,20 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { projectService } from "@/services/api/index";
+import ApperIcon from "@/components/ApperIcon";
 import ProjectGrid from "@/components/organisms/ProjectGrid";
+import Card from "@/components/atoms/Card";
+import Input from "@/components/atoms/Input";
 import Button from "@/components/atoms/Button";
 import SearchBar from "@/components/molecules/SearchBar";
-import Input from "@/components/atoms/Input";
-import Card from "@/components/atoms/Card";
-import { toast } from "react-toastify";
-import { projectService } from "@/services/api";
-import ApperIcon from "@/components/ApperIcon";
 
 const Projects = () => {
-  const navigate = useNavigate();
+const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [clientFilter, setClientFilter] = useState("");
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [formData, setFormData] = useState({
@@ -27,7 +29,6 @@ const Projects = () => {
     endDate: ""
   });
   const [formErrors, setFormErrors] = useState({});
-
   const handleProjectClick = (project) => {
     const projectId = parseInt(project.Id);
     navigate(`/projects/${projectId}`);
@@ -183,9 +184,12 @@ const Projects = () => {
             onClear={() => setSearchTerm("")}
           />
         </div>
-        
-        <div className="flex space-x-2">
-          <select className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
+<div className="flex space-x-2">
+          <select 
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+          >
             <option value="">All Statuses</option>
             <option value="active">Active</option>
             <option value="in-progress">In Progress</option>
@@ -193,7 +197,11 @@ const Projects = () => {
             <option value="on-hold">On Hold</option>
           </select>
           
-          <select className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
+          <select 
+            value={clientFilter}
+            onChange={(e) => setClientFilter(e.target.value)}
+            className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+          >
             <option value="">All Clients</option>
             <option value="acme-corp">Acme Corp</option>
             <option value="tech-startup">Tech Startup Inc</option>
@@ -245,13 +253,14 @@ const Projects = () => {
           </div>
         </div>
       </div>
-
 {/* Projects Grid */}
       <ProjectGrid
+        searchTerm={searchTerm}
+        statusFilter={statusFilter}
+        clientFilter={clientFilter}
         onProjectClick={handleProjectClick}
         onAddProject={handleAddProject}
       />
-      
       {/* Create Project Modal */}
       {showCreateModal && (
         <motion.div

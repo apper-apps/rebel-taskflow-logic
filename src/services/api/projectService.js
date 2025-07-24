@@ -1,5 +1,4 @@
 import projectData from "@/services/mockData/projects.json";
-
 class ProjectService {
   constructor() {
     this.projects = [...projectData];
@@ -43,7 +42,6 @@ class ProjectService {
     this.projects[index] = { ...this.projects[index], ...updates };
     return { ...this.projects[index] };
   }
-
 async delete(Id) {
     await this.delay(250);
     const index = this.projects.findIndex(p => p.Id === Id);
@@ -65,8 +63,51 @@ async delete(Id) {
     this.projects[index].totalActualHours = Math.round((this.projects[index].totalActualHours + hours) * 100) / 100;
     return { ...this.projects[index] };
   }
+async search(searchTerm) {
+    await this.delay(200);
+    if (!searchTerm) return [...this.projects];
+    
+    const term = searchTerm.toLowerCase();
+    return this.projects.filter(project =>
+      project.name.toLowerCase().includes(term) ||
+      project.description.toLowerCase().includes(term) ||
+      project.clientName.toLowerCase().includes(term)
+    );
+  }
 
-delay(ms) {
+  async getByFilters({ searchTerm = "", statusFilter = "", clientFilter = "" }) {
+    await this.delay(250);
+    
+    let filtered = [...this.projects];
+    
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase();
+      filtered = filtered.filter(project =>
+        project.name.toLowerCase().includes(term) ||
+        project.description.toLowerCase().includes(term) ||
+        project.clientName.toLowerCase().includes(term)
+      );
+    }
+    
+    if (statusFilter) {
+      filtered = filtered.filter(project => project.status === statusFilter);
+    }
+    
+    if (clientFilter) {
+      filtered = filtered.filter(project => project.clientName === clientFilter);
+    }
+    
+    return filtered;
+  }
+
+  async getUniqueClients() {
+    await this.delay(100);
+    const clients = [...new Set(this.projects.map(p => p.clientName))];
+    return clients.sort();
+return clients.sort();
+  }
+
+  delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 }
@@ -74,4 +115,3 @@ delay(ms) {
 // Create and export an instance of the service
 const projectService = new ProjectService();
 export default projectService;
-export { projectService };

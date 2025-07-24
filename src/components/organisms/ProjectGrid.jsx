@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { projectService } from "@/services/api/index";
 import ProjectCard from "@/components/molecules/ProjectCard";
-import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
-import { projectService } from "@/services/api";
+import Loading from "@/components/ui/Loading";
 
 const ProjectGrid = ({ onProjectClick, onAddProject }) => {
   const [projects, setProjects] = useState([]);
@@ -50,7 +50,7 @@ const ProjectGrid = ({ onProjectClick, onAddProject }) => {
         onAction={onAddProject}
       />
     );
-  }
+}
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
