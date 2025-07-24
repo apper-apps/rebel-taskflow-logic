@@ -100,11 +100,10 @@ async search(searchTerm) {
     return filtered;
   }
 
-  async getUniqueClients() {
+async getUniqueClients() {
     await this.delay(100);
     const clients = [...new Set(this.projects.map(p => p.clientName))];
     return clients.sort();
-return clients.sort();
   }
 
   delay(ms) {
