@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { useParams, useNavigate } from "react-router-dom";
-import { projectService } from "@/services/api";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import Card from "@/components/atoms/Card";
-import Button from "@/components/atoms/Button";
-import Input from "@/components/atoms/Input";
+import { projectService } from "@/services/api/projectService";
 import ApperIcon from "@/components/ApperIcon";
-import Loading from "@/components/ui/Loading";
+import Card from "@/components/atoms/Card";
+import Input from "@/components/atoms/Input";
+import Button from "@/components/atoms/Button";
 import Error from "@/components/ui/Error";
+import Loading from "@/components/ui/Loading";
 
 const ProjectEdit = () => {
   const { id } = useParams();
@@ -16,7 +16,7 @@ const ProjectEdit = () => {
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState("");
+const [error, setError] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -25,6 +25,8 @@ const ProjectEdit = () => {
     totalEstimatedHours: 0,
     objectives: []
   });
+  const [milestones, setMilestones] = useState([]);
+  const [editingMilestone, setEditingMilestone] = useState(null);
 
   useEffect(() => {
     loadProject();
@@ -48,9 +50,10 @@ const ProjectEdit = () => {
         description: data.description || "",
         clientName: data.clientName || "",
         status: data.status || "active",
-        totalEstimatedHours: data.totalEstimatedHours || 0,
+totalEstimatedHours: data.totalEstimatedHours || 0,
         objectives: data.objectives || []
       });
+      setMilestones(data.milestones || []);
     } catch (err) {
       setError(err.message || "Errore nel caricamento del progetto");
       console.error("Error loading project:", err);
@@ -105,10 +108,11 @@ const ProjectEdit = () => {
     try {
       setSaving(true);
       const projectId = parseInt(id);
+const projectId = parseInt(id);
       
       const updateData = {
-        ...formData,
-        objectives: formData.objectives.filter(obj => obj.trim() !== "")
+        objectives: formData.objectives.filter(obj => obj.trim() !== ""),
+        milestones: milestones
       };
 
       await projectService.update(projectId, updateData);
@@ -120,10 +124,71 @@ const ProjectEdit = () => {
     } finally {
       setSaving(false);
     }
-  };
+};
 
   const handleCancel = () => {
     navigate(`/projects/${id}`);
+  };
+
+  // Milestone management functions
+  const addMilestone = () => {
+    const newMilestone = {
+      id: `m${Date.now()}`,
+      name: "",
+      dueDate: new Date().toISOString().split('T')[0],
+      completed: false
+    };
+    setMilestones(prev => [...prev, newMilestone]);
+    setEditingMilestone(newMilestone.id);
+  };
+
+  const removeMilestone = (milestoneId) => {
+    setMilestones(prev => prev.filter(m => m.id !== milestoneId));
+    setEditingMilestone(null);
+  };
+
+  const toggleMilestoneCompletion = (milestoneId) => {
+    setMilestones(prev => prev.map(m => 
+      m.id === milestoneId ? { ...m, completed: !m.completed } : m
+    ));
+  };
+
+  const updateMilestone = (milestoneId, field, value) => {
+    setMilestones(prev => prev.map(m => 
+      m.id === milestoneId ? { ...m, [field]: value } : m
+    ));
+  };
+
+  const saveMilestone = (milestoneId) => {
+    const milestone = milestones.find(m => m.id === milestoneId);
+    if (!milestone?.name.trim()) {
+      toast.error("Il nome della milestone è obbligatorio");
+      return;
+    }
+    setEditingMilestone(null);
+  };
+
+  const cancelMilestoneEdit = (milestoneId) => {
+    const milestone = milestones.find(m => m.id === milestoneId);
+    if (!milestone?.name.trim()) {
+      removeMilestone(milestoneId);
+    } else {
+      setEditingMilestone(null);
+    }
+  };
+
+  const formatDateForInput = (dateString) => {
+    if (!dateString) return '';
+    return new Date(dateString).toISOString().split('T')[0];
+  };
+
+  const formatDateForDisplay = (dateString) => {
+    if (!dateString) return '';
+    return new Date(dateString).toLocaleDateString('it-IT', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    });
   };
 
   if (loading) {
@@ -290,9 +355,164 @@ const ProjectEdit = () => {
                 </div>
               ))}
             </div>
+</div>
+
+          {/* Milestones Section */}
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Milestone
+              </label>
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                icon="Plus"
+                onClick={addMilestone}
+              >
+                Aggiungi Milestone
+              </Button>
+            </div>
+            
+            <div className="space-y-4">
+              {milestones.length === 0 && (
+                <div className="text-center py-8 text-gray-500">
+                  <ApperIcon name="Target" size={48} className="mx-auto mb-3 text-gray-300" />
+                  <p>Nessuna milestone definita</p>
+                  <p className="text-sm">Aggiungi milestone per tracciare i progressi del progetto</p>
+                </div>
+              )}
+              
+              {milestones.map((milestone) => (
+                <div key={milestone.id} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                  <div className="flex items-start space-x-3">
+                    {!milestone.completed && (
+                      <button
+                        type="button"
+                        onClick={() => toggleMilestoneCompletion(milestone.id)}
+                        className="flex-shrink-0 w-5 h-5 mt-1 border-2 border-gray-300 rounded-full hover:border-primary-500 transition-colors"
+                        title="Segna come completata"
+                      />
+                    )}
+                    
+                    {milestone.completed && (
+                      <button
+                        type="button"
+                        onClick={() => toggleMilestoneCompletion(milestone.id)}
+                        className="flex-shrink-0 w-5 h-5 mt-1 bg-green-500 border-2 border-green-500 rounded-full flex items-center justify-center hover:bg-green-600 transition-colors"
+                        title="Segna come non completata"
+                      >
+                        <ApperIcon name="Check" size={12} className="text-white" />
+                      </button>
+                    )}
+                    
+                    <div className="flex-1 min-w-0">
+                      {editingMilestone === milestone.id ? (
+                        <div className="space-y-3">
+                          <Input
+                            type="text"
+                            value={milestone.name}
+                            onChange={(e) => updateMilestone(milestone.id, 'name', e.target.value)}
+                            placeholder="Nome della milestone"
+                            className="w-full"
+                            autoFocus
+                          />
+                          
+                          <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-3 space-y-2 sm:space-y-0">
+                            <div className="flex-1">
+                              <label className="block text-xs font-medium text-gray-600 mb-1">
+                                Data di scadenza
+                              </label>
+                              <Input
+                                type="date"
+                                value={formatDateForInput(milestone.dueDate)}
+                                onChange={(e) => updateMilestone(milestone.id, 'dueDate', e.target.value ? new Date(e.target.value).toISOString() : '')}
+                                className="w-full"
+                              />
+                            </div>
+                            
+                            <div className="flex space-x-2 sm:mt-5">
+                              <Button
+                                type="button"
+                                variant="primary"
+                                size="sm"
+                                icon="Check"
+                                onClick={() => saveMilestone(milestone.id)}
+                              >
+                                Salva
+                              </Button>
+                              <Button
+                                type="button"
+                                variant="secondary"
+                                size="sm"
+                                icon="X"
+                                onClick={() => cancelMilestoneEdit(milestone.id)}
+                              >
+                                Annulla
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                          <div className="flex-1 min-w-0">
+                            <h4 className={`font-medium ${milestone.completed ? 'text-gray-500 line-through' : 'text-gray-900'}`}>
+                              {milestone.name || 'Milestone senza nome'}
+                            </h4>
+                            
+                            <div className="flex items-center mt-1 space-x-4 text-sm text-gray-500">
+                              <div className="flex items-center space-x-1">
+                                <ApperIcon name="Calendar" size={14} />
+                                <span>{formatDateForDisplay(milestone.dueDate)}</span>
+                              </div>
+                              
+                              {milestone.completed && (
+                                <div className="flex items-center space-x-1 text-green-600">
+                                  <ApperIcon name="CheckCircle" size={14} />
+                                  <span>Completata</span>
+                                </div>
+                              )}
+                              
+                              {!milestone.completed && new Date(milestone.dueDate) < new Date() && (
+                                <div className="flex items-center space-x-1 text-red-600">
+                                  <ApperIcon name="AlertCircle" size={14} />
+                                  <span>In ritardo</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-center space-x-2 mt-2 sm:mt-0">
+                            <Button
+                              type="button"
+                              variant="secondary"
+                              size="sm"
+                              icon="Edit"
+                              onClick={() => setEditingMilestone(milestone.id)}
+                            >
+                              Modifica
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="secondary"
+                              size="sm"
+                              icon="Trash2"
+                              onClick={() => removeMilestone(milestone.id)}
+                              className="text-red-600 hover:text-red-700"
+                            >
+                              Rimuovi
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
-          <div className="flex justify-end space-x-4 pt-6 border-t">
+<div className="flex justify-end space-x-4 pt-6 border-t">
             <Button
               type="button"
               variant="secondary"
