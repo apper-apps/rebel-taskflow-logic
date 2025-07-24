@@ -127,7 +127,9 @@ async startTimer(Id) {
     return { ...this.tasks[index] };
   }
 
-  delay(ms) {
+delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 }
+
+export default new TaskService();
