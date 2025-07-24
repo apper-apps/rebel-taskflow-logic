@@ -66,7 +66,12 @@ async delete(Id) {
     return { ...this.projects[index] };
   }
 
-  delay(ms) {
+delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 }
+
+// Create and export an instance of the service
+const projectService = new ProjectService();
+export default projectService;
+export { projectService };
