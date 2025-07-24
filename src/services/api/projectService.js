@@ -52,11 +52,22 @@ class ProjectService {
     }
     this.projects.splice(index, 1);
     return true;
+return true;
+  }
+
+  async logTimeToProject(projectId, minutes) {
+    await this.delay(200);
+    const index = this.projects.findIndex(p => p.Id === projectId);
+    if (index === -1) {
+      throw new Error(`Project with Id ${projectId} not found`);
+    }
+    
+    const hours = minutes / 60;
+    this.projects[index].totalActualHours = Math.round((this.projects[index].totalActualHours + hours) * 100) / 100;
+    return { ...this.projects[index] };
   }
 
   delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 }
-
-export const projectService = new ProjectService();

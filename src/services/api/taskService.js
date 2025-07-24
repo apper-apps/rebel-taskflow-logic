@@ -62,11 +62,38 @@ async create(taskData) {
   async getByStatus(status) {
     await this.delay(200);
     return this.tasks.filter(task => task.status?.toLowerCase() === status.toLowerCase());
+return this.tasks.filter(task => task.status?.toLowerCase() === status.toLowerCase());
+  }
+
+  async completeWithTime(Id, minutes) {
+    await this.delay(300);
+    const index = this.tasks.findIndex(t => t.Id === Id);
+    if (index === -1) {
+      throw new Error(`Task with Id ${Id} not found`);
+    }
+
+    const task = this.tasks[index];
+    this.tasks[index] = { 
+      ...task, 
+      status: "completed",
+      actualMinutes: minutes,
+      completedAt: new Date().toISOString()
+    };
+
+    // Update project hours if task has a project
+    if (task.projectId) {
+      const { projectService } = await import("./projectService.js");
+      try {
+        await projectService.logTimeToProject(task.projectId, minutes);
+      } catch (error) {
+        console.warn("Could not update project hours:", error.message);
+      }
+    }
+
+    return { ...this.tasks[index] };
   }
 
   delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 }
-
-export const taskService = new TaskService();

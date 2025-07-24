@@ -4,10 +4,12 @@ import { format } from "date-fns";
 import ApperIcon from "@/components/ApperIcon";
 import Badge from "@/components/atoms/Badge";
 import Card from "@/components/atoms/Card";
+import Input from "@/components/atoms/Input";
 import Button from "@/components/atoms/Button";
 const TaskCard = React.forwardRef(({ task, project, onComplete, onEdit, onDelete, onStartTimer }, ref) => {
-  const [isCompleting, setIsCompleting] = useState(false)
-
+  const [isCompleting, setIsCompleting] = useState(false);
+  const [showTimeModal, setShowTimeModal] = useState(false);
+  const [timeInput, setTimeInput] = useState('');
 function getPriorityVariant(priority) {
     const variants = {
       High: "destructive",
@@ -26,12 +28,31 @@ function getPriorityVariant(priority) {
     }
   };
 
-  const handleComplete = async () => {
+const handleComplete = async () => {
     setIsCompleting(true);
-    setTimeout(() => {
+    setShowTimeModal(true);
+  };
+
+  const handleCloseTimeModal = () => {
+    setShowTimeModal(false);
+    setTimeInput('');
+    setIsCompleting(false);
+  };
+
+  const handleCompleteWithoutTime = () => {
+    onComplete?.(task.Id);
+    handleCloseTimeModal();
+  };
+
+  const handleCompleteWithTime = () => {
+    const hours = parseFloat(timeInput);
+    if (!isNaN(hours) && hours > 0) {
+      const minutes = Math.round(hours * 60);
+      onComplete?.(task.Id, minutes);
+    } else {
       onComplete?.(task.Id);
-      setIsCompleting(false);
-    }, 500);
+    }
+    handleCloseTimeModal();
   };
 
 const formatTime = (minutes) => {
@@ -145,7 +166,73 @@ const formatTime = (minutes) => {
             </div>
 </div>
         </div>
-</Card>
+
+        {/* Time Input Modal */}
+        {showTimeModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+            onClick={handleCloseTimeModal}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-lg p-6 max-w-md w-full mx-4"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Registra Tempo
+                </h3>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  icon="X"
+                  onClick={handleCloseTimeModal}
+                />
+              </div>
+
+              <div className="mb-4">
+                <p className="text-sm text-gray-600 mb-3">
+                  Quanto tempo hai impiegato per completare "{task.title}"?
+                </p>
+                <Input
+                  type="number"
+                  placeholder="es. 2.5 (ore)"
+                  value={timeInput}
+                  onChange={(e) => setTimeInput(e.target.value)}
+                  step="0.25"
+                  min="0"
+                  className="w-full"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Inserisci il tempo in ore (es. 1.5 per 1 ora e 30 minuti)
+                </p>
+              </div>
+
+              <div className="flex space-x-3">
+                <Button
+                  variant="secondary"
+                  onClick={handleCompleteWithoutTime}
+                  className="flex-1"
+                >
+                  Completa senza tempo
+                </Button>
+                <Button
+                  variant="primary"
+                  onClick={handleCompleteWithTime}
+                  className="flex-1"
+                >
+                  Registra e completa
+                </Button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </Card>
     </motion.div>
   )
 })
